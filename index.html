@@ -2,21 +2,213 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Horizon Realty — Rental Assistant</title>
+  <title>Horizon Realty — Sydney Rental Properties & Assistant</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     /* ========== BASE ========== */
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; background: #f8fafc; color: #1e293b; }
-    header { background: #0f172a; color: white; padding: 24px; text-align: center; }
-    main { padding: 40px 20px; max-width: 800px; margin: auto; background: white; border-radius: 12px; margin-top: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-    .highlight { background: #eff6ff; border-left: 4px solid #2563eb; padding: 16px; border-radius: 4px; margin-top: 20px; }
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --border: #e2e8f0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      background: var(--bg);
+      color: var(--text-main);
+    }
+
+    header {
+      background: #0f172a;
+      color: white;
+      padding: 36px 20px;
+      text-align: center;
+    }
+    header h1 { margin: 0 0 8px; font-size: 28px; font-weight: 700; }
+    header p { margin: 0; color: #94a3b8; font-size: 16px; }
+
+    main {
+      max-width: 1140px;
+      margin: 30px auto;
+      padding: 0 20px 80px;
+    }
+
+    .section-header {
+      margin-bottom: 24px;
+    }
+    .section-header h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin: 0 0 6px;
+    }
+    .section-header p {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    /* ========== WEBSITE PROPERTY GRID ========== */
+    .website-property-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .web-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .web-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    .web-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      background-color: #cbd5e1;
+    }
+
+    .web-card-body {
+      padding: 16px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .web-price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+    .web-price {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .web-price-period {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .web-card-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+    .web-card-address {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .web-features {
+      display: flex;
+      gap: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #334155;
+      padding: 8px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 12px;
+    }
+
+    .web-meta-row {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .web-meta-row strong {
+      color: var(--text-main);
+    }
+
+    .web-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+      margin-bottom: 16px;
+    }
+    .web-tag {
+      background: #eff6ff;
+      color: var(--primary);
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .web-card-actions {
+      margin-top: auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .btn-action {
+      padding: 9px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      border: 1px solid transparent;
+      transition: background 0.15s ease;
+    }
+    .btn-action-primary {
+      background: var(--primary);
+      color: white;
+      border: none;
+    }
+    .btn-action-primary:hover {
+      background: var(--primary-dark);
+    }
+    .btn-action-outline {
+      background: white;
+      border-color: var(--border);
+      color: var(--text-main);
+    }
+    .btn-action-outline:hover {
+      background: #f1f5f9;
+    }
+
+    .banner-highlight {
+      background: #eff6ff;
+      border-left: 4px solid var(--primary);
+      padding: 16px;
+      border-radius: 6px;
+      font-size: 14px;
+      color: #1e3a8a;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
 
     /* ========== CHAT TOGGLE BUTTON ========== */
     .chatbot-toggle {
       position: fixed; right: 20px; bottom: 20px;
-      background: #2563eb; color: white;
+      background: var(--primary); color: white;
       border: none; border-radius: 999px;
-      padding: 14px 20px; font-size: 15px; font-weight: 600;
+      padding: 14px 22px; font-size: 15px; font-weight: 600;
       cursor: pointer; box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.4); z-index: 1000;
       display: flex; align-items: center; gap: 8px;
     }
@@ -28,7 +220,7 @@
       background: white; border-radius: 16px;
       box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
       display: none; flex-direction: column;
-      overflow: hidden; z-index: 1000; border: 1px solid #e2e8f0;
+      overflow: hidden; z-index: 1000; border: 1px solid var(--border);
       transition: width 0.25s ease, height 0.25s ease;
     }
     .chatbot-panel.expanded { width: 500px; height: 720px; }
@@ -54,30 +246,23 @@
       white-space: pre-wrap; line-height: 1.45;
       font-size: 14px;
     }
-    .message.user { background: #2563eb; color: white; margin-left: auto; border-bottom-right-radius: 2px; }
-    .message.bot  { background: white; color: #1e293b; margin-right: auto; border: 1px solid #e2e8f0; border-bottom-left-radius: 2px; }
+    .message.user { background: var(--primary); color: white; margin-left: auto; border-bottom-right-radius: 2px; }
+    .message.bot  { background: white; color: var(--text-main); margin-right: auto; border: 1px solid var(--border); border-bottom-left-radius: 2px; }
 
     .typing { font-size: 12px; color: #64748b; margin-bottom: 10px; font-style: italic; }
 
-    /* ========== PROPERTY CARDS ========== */
+    /* ========== PROPERTY CARDS IN BOT ========== */
     .bot-property-list { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 14px; }
     .property-card {
       display: block; text-decoration: none; color: inherit;
-      background: white; border: 1px solid #e2e8f0; border-radius: 10px; overflow: hidden;
+      background: white; border: 1px solid var(--border); border-radius: 10px; overflow: hidden;
       box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
-    .property-card img { width: 100%; height: 160px; object-fit: cover; }
+    .property-card img { width: 100%; height: 140px; object-fit: cover; }
     .property-content { padding: 12px; }
-    .property-price { font-size: 16px; font-weight: 700; color: #2563eb; margin-bottom: 4px; }
-    .property-title { font-size: 14px; font-weight: 600; color: #0f172a; margin-bottom: 4px; }
+    .property-price { font-size: 15px; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+    .property-title { font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 2px; }
     .property-meta  { font-size: 12px; color: #64748b; }
-
-    /* ========== CONTACT ACTION CARDS ========== */
-    .bot-contact-actions { display: grid; gap: 8px; margin-bottom: 14px; }
-    .contact-card {
-      display: block; padding: 10px 14px; text-decoration: none; color: #334155;
-      background: white; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px;
-    }
 
     /* ========== FORMS & SLOT PICKER ========== */
     .lead-form-card {
@@ -90,11 +275,11 @@
       width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px;
       font-size: 13px; box-sizing: border-box; outline: none; margin-top: 4px;
     }
-    .lead-form-card input:focus, .lead-form-card select:focus { border-color: #2563eb; }
+    .lead-form-card input:focus, .lead-form-card select:focus { border-color: var(--primary); }
     .field-error { font-size: 11px; color: #ef4444; margin-top: 3px; display: none; }
 
     .lead-form-submit {
-      margin-top: 14px; width: 100%; padding: 10px; background: #2563eb;
+      margin-top: 14px; width: 100%; padding: 10px; background: var(--primary);
       color: white; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer;
     }
     .form-cancel { text-align: center; font-size: 12px; color: #64748b; cursor: pointer; margin-top: 8px; }
@@ -106,19 +291,19 @@
       background: white; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13px;
       cursor: pointer; text-align: left;
     }
-    .slot-btn:hover { border-color: #2563eb; background: #eff6ff; }
+    .slot-btn:hover { border-color: var(--primary); background: #eff6ff; }
 
     /* ========== INPUT BAR ========== */
-    .chat-input-wrap { display: flex; border-top: 1px solid #e2e8f0; background: white; align-items: center; }
+    .chat-input-wrap { display: flex; border-top: 1px solid var(--border); background: white; align-items: center; }
     .chat-input { flex: 1; padding: 14px; border: none; outline: none; font-size: 14px; }
-    .chat-send  { padding: 14px 18px; border: none; background: #2563eb; color: white; cursor: pointer; font-weight: 600; }
+    .chat-send  { padding: 14px 18px; border: none; background: var(--primary); color: white; cursor: pointer; font-weight: 600; }
     .chat-mic {
       padding: 10px 12px; border: none; background: transparent;
       cursor: pointer; font-size: 18px; color: #64748b;
     }
     .chat-mic.recording { color: #ef4444; animation: mic-pulse 1s infinite; }
     .voice-toggle { padding: 10px 6px; border: none; background: transparent; cursor: pointer; font-size: 16px; color: #94a3b8; }
-    .voice-toggle.active { color: #2563eb; }
+    .voice-toggle.active { color: var(--primary); }
     @keyframes mic-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
   </style>
 </head>
@@ -126,20 +311,164 @@
 
 <header>
   <h1>Horizon Realty</h1>
-  <p>Find Your Next Rental Home Seamlessly</p>
+  <p>Sydney’s Premier Residential Rental Agency</p>
 </header>
 
 <main>
-  <h2>Looking for a rental?</h2>
-  <p>Our rental specialist Sarah can help you search available listings, understand bond & pet rules, and schedule property inspections.</p>
-  <div class="highlight">💬 Click the button on the bottom right to begin your property search or book a viewing.</div>
+  <div class="section-header">
+    <h2>Current Rental Listings (NSW)</h2>
+    <p>All prices quoted in AUD per week ($/week) with standard 4-week bond. Chat with Sarah below to schedule viewings or apply.</p>
+  </div>
+
+  <div class="website-property-grid">
+
+    <div class="web-card" id="card-PROP-AU-101">
+      <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=700&auto=format&fit=crop&q=80" alt="Studio in Sydney CBD" />
+      <div class="web-card-body">
+        <div class="web-price-row">
+          <span class="web-price">$550</span>
+          <span class="web-price-period">AUD / week ($2,390 pcm)</span>
+        </div>
+        <div class="web-card-title">Modern Studio in Sydney CBD</div>
+        <div class="web-card-address">452 George Street, Apt 4B, Sydney NSW 2000</div>
+        
+        <div class="web-features">
+          <span>🛏 Studio</span>
+          <span>🚿 1 Bath</span>
+          <span>🚗 0 Car</span>
+        </div>
+
+        <div class="web-meta-row"><strong>Bond:</strong> $2,200 (4 weeks)</div>
+        <div class="web-meta-row"><strong>Available:</strong> 1 Sep 2026</div>
+        <div class="web-meta-row"><strong>Pets:</strong> Considered on application</div>
+
+        <div class="web-tags">
+          <span class="web-tag">Internal Laundry</span>
+          <span class="web-tag">Pool & Gym</span>
+          <span class="web-tag">NBN Ready</span>
+        </div>
+
+        <div class="web-card-actions">
+          <button class="btn-action btn-action-primary" onclick="initiateInspection('452 George Street, Sydney (PROP-AU-101)')">Book Inspection</button>
+          <button class="btn-action btn-action-outline" onclick="askSarahAbout('Tell me more about the studio at 452 George Street, Sydney')">Ask Sarah</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="web-card" id="card-PROP-AU-102">
+      <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=700&auto=format&fit=crop&q=80" alt="Harbourside 2-Bed Pyrmont" />
+      <div class="web-card-body">
+        <div class="web-price-row">
+          <span class="web-price">$850</span>
+          <span class="web-price-period">AUD / week ($3,695 pcm)</span>
+        </div>
+        <div class="web-card-title">Harbourside 2-Bed Apartment</div>
+        <div class="web-card-address">12 Bowman Street, Unit 1402, Pyrmont NSW 2009</div>
+        
+        <div class="web-features">
+          <span>🛏 2 Bed</span>
+          <span>🚿 2 Bath</span>
+          <span>🚗 1 Secure Car</span>
+        </div>
+
+        <div class="web-meta-row"><strong>Bond:</strong> $3,400 (4 weeks)</div>
+        <div class="web-meta-row"><strong>Available:</strong> Available Now</div>
+        <div class="web-meta-row"><strong>Pets:</strong> Subject to Strata Approval</div>
+
+        <div class="web-tags">
+          <span class="web-tag">Ducted A/C</span>
+          <span class="web-tag">Harbour Views</span>
+          <span class="web-tag">Rooftop Pool</span>
+        </div>
+
+        <div class="web-card-actions">
+          <button class="btn-action btn-action-primary" onclick="initiateInspection('12 Bowman Street, Pyrmont (PROP-AU-102)')">Book Inspection</button>
+          <button class="btn-action btn-action-outline" onclick="askSarahAbout('What are the strata rules and bond for 12 Bowman Street Pyrmont?')">Ask Sarah</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="web-card" id="card-PROP-AU-103">
+      <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=700&auto=format&fit=crop&q=80" alt="Family Home Paddington" />
+      <div class="web-card-body">
+        <div class="web-price-row">
+          <span class="web-price">$1,100</span>
+          <span class="web-price-period">AUD / week ($4,780 pcm)</span>
+        </div>
+        <div class="web-card-title">Charming 3-Bed Family Terrace</div>
+        <div class="web-card-address">78 Elmwood Road, Paddington NSW 2021</div>
+        
+        <div class="web-features">
+          <span>🛏 3 Bed</span>
+          <span>🚿 2 Bath</span>
+          <span>🚗 2 Garage</span>
+        </div>
+
+        <div class="web-meta-row"><strong>Bond:</strong> $4,400 (4 weeks)</div>
+        <div class="web-meta-row"><strong>Available:</strong> 1 Oct 2026</div>
+        <div class="web-meta-row"><strong>Pets:</strong> Pet Friendly (Dogs & Cats)</div>
+
+        <div class="web-tags">
+          <span class="web-tag">Fenced Yard</span>
+          <span class="web-tag">Double Garage</span>
+          <span class="web-tag">Solar Panels</span>
+        </div>
+
+        <div class="web-card-actions">
+          <button class="btn-action btn-action-primary" onclick="initiateInspection('78 Elmwood Road, Paddington (PROP-AU-103)')">Book Inspection</button>
+          <button class="btn-action btn-action-outline" onclick="askSarahAbout('Is 78 Elmwood Road Paddington pet-friendly for a large dog?')">Ask Sarah</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="web-card" id="card-PROP-AU-104">
+      <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=700&auto=format&fit=crop&q=80" alt="Penthouse Surry Hills" />
+      <div class="web-card-body">
+        <div class="web-price-row">
+          <span class="web-price">$1,950</span>
+          <span class="web-price-period">AUD / week ($8,475 pcm)</span>
+        </div>
+        <div class="web-card-title">Skyline Penthouse Loft</div>
+        <div class="web-card-address">88 Crown Street, PH-A, Surry Hills NSW 2010</div>
+        
+        <div class="web-features">
+          <span>🛏 3 Bed</span>
+          <span>🚿 3 Bath</span>
+          <span>🚗 2 Basement</span>
+        </div>
+
+        <div class="web-meta-row"><strong>Bond:</strong> $7,800 (4 weeks)</div>
+        <div class="web-meta-row"><strong>Available:</strong> Available Now</div>
+        <div class="web-meta-row"><strong>Pets:</strong> Small pets considered</div>
+
+        <div class="web-tags">
+          <span class="web-tag">Direct Lift Access</span>
+          <span class="web-tag">Wrap-around Terrace</span>
+          <span class="web-tag">Miele Kitchen</span>
+        </div>
+
+        <div class="web-card-actions">
+          <button class="btn-action btn-action-primary" onclick="initiateInspection('88 Crown Street, Surry Hills (PROP-AU-104)')">Book Inspection</button>
+          <button class="btn-action btn-action-outline" onclick="askSarahAbout('Can I arrange a private viewing for the Surry Hills Penthouse?')">Ask Sarah</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="banner-highlight">
+    <div>
+      <strong>Need something different?</strong> Tell Sarah your target suburb, weekly budget, or move-in date and let her match you.
+    </div>
+    <button class="btn-action btn-action-primary" onclick="openChat()">Chat with Sarah</button>
+  </div>
 </main>
 
 <button id="chatbot-toggle" class="chatbot-toggle">💬 Find a Home</button>
 
 <div id="chatbot-panel" class="chatbot-panel">
   <div class="chatbot-header">
-    <span>Sarah • Horizon Realty</span>
+    <span>Sarah • Horizon Realty (AU)</span>
     <div class="chatbot-header-actions">
       <button id="chatbot-expand" class="chatbot-btn-action" title="Expand">⤢</button>
       <button id="chatbot-refresh" class="chatbot-btn-action" title="New Conversation">&#8635;</button>
@@ -147,10 +476,10 @@
     </div>
   </div>
   <div id="chat-messages" class="chat-messages">
-    <div class="message bot">Hello! I'm Sarah from Horizon Realty. How can I help you today? You can ask me about available rentals, pet policies, or book an inspection!</div>
+    <div class="message bot">G'day! I'm Sarah from Horizon Realty. How can I help you today? You can ask me about available Sydney rentals, pet policies, NSW bond requirements, or book an inspection!</div>
   </div>
   <form id="chat-form" class="chat-input-wrap">
-    <input id="chat-input" class="chat-input" type="text" placeholder="Ask about listings, inspections, bond..." autocomplete="off" maxlength="300" />
+    <input id="chat-input" class="chat-input" type="text" placeholder="Ask about rent, suburbs, bond, viewings..." autocomplete="off" maxlength="300" />
     <button type="button" id="voice-toggle" class="voice-toggle" title="Voice mode OFF">🔇</button>
     <button type="button" id="chat-mic" class="chat-mic" title="Speak">🎤</button>
     <button type="submit" class="chat-send">Send</button>
@@ -159,7 +488,6 @@
 
 <script>
   // ========== CONFIG ==========
-  // Replace these with your target Supabase Edge Function credentials for the rental project
   const EDGE_FUNCTION_URL = "https://rwyifppvzedmehzptrmt.supabase.co/functions/v1/rental-handler";
   const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ3eWlmcHB2emVkbWVoenB0cm10Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY3ODk4OTQsImV4cCI6MjEwMjM2NTg5NH0.yFriJtO7pmMVo5Q-8LA5ysrU-cHF3skt3zH2sRd8_GE";
 
@@ -177,14 +505,18 @@
   const chatForm = document.getElementById("chat-form");
   const chatInput = document.getElementById("chat-input");
 
-  document.getElementById("chatbot-toggle").addEventListener("click", () => panel.style.display = "flex");
+  function openChat() {
+    panel.style.display = "flex";
+  }
+
+  document.getElementById("chatbot-toggle").addEventListener("click", openChat);
   document.getElementById("chatbot-close").addEventListener("click", () => panel.style.display = "none");
   document.getElementById("chatbot-expand").addEventListener("click", () => {
     panel.classList.toggle("expanded");
   });
 
   document.getElementById("chatbot-refresh").addEventListener("click", () => {
-    messages.innerHTML = '<div class="message bot">Hello! I\'m Sarah from Horizon Realty. How can I help you today? You can ask me about available rentals, pet policies, or book an inspection!</div>';
+    messages.innerHTML = '<div class="message bot">G\'day! I\'m Sarah from Horizon Realty. How can I help you today? You can ask me about available Sydney rentals, pet policies, NSW bond requirements, or book an inspection!</div>';
     removeAllForms();
     _sessionId = "r_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
     localStorage.setItem("horizon_rental_session_id", _sessionId);
@@ -234,11 +566,11 @@
       card.className = "property-card";
       const img = p.image_urls && p.image_urls.length ? p.image_urls[0] : "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=500";
       card.innerHTML = `
-        <img src="${img}" alt="${p.title}" />
+        <img src="${img}" alt="${p.title || 'Property'}" />
         <div class="property-content">
-          <div class="property-price">$${p.rent_per_week} / week</div>
-          <div class="property-title">${p.address}, ${p.suburb}</div>
-          <div class="property-meta">🛏 ${p.bedrooms} Bed | 🛁 ${p.bathrooms} Bath | 🚗 ${p.parking_spaces} Parking</div>
+          <div class="property-price">$${p.rent_per_week || p.price_per_week} AUD / week</div>
+          <div class="property-title">${p.address || ''}, ${p.suburb || ''}</div>
+          <div class="property-meta">🛏 ${p.bedrooms} Bed | 🛁 ${p.bathrooms} Bath | 🚗 ${p.parking_spaces || p.car_spaces || 0} Car</div>
         </div>
       `;
       grid.appendChild(card);
@@ -248,170 +580,4 @@
     scrollToBottom();
   }
 
-  function showBookingForm(slot, slotLabel) {
-    chatForm.style.display = "none";
-    const card = document.createElement("div");
-    card.className = "lead-form-card"; card.id = "booking-form-card";
-
-    card.innerHTML = `
-      <div style="font-size:13px;font-weight:700;color:#0f172a;margin-bottom:8px;">Complete Inspection Booking</div>
-      <label for="rf-name">Full Name *</label>
-      <input id="rf-name" type="text" placeholder="e.g. Alex Morgan" />
-      <div class="field-error" id="rf-name-err"></div>
-
-      <label for="rf-phone">Mobile Number *</label>
-      <input id="rf-phone" type="tel" placeholder="e.g. 0412 345 678" />
-      <div class="field-error" id="rf-phone-err"></div>
-
-      <label for="rf-email">Email Address</label>
-      <input id="rf-email" type="email" placeholder="e.g. alex@example.com" />
-
-      <label for="rf-property">Property Address of Interest</label>
-      <input id="rf-property" type="text" placeholder="e.g. 14 Smith St, Parramatta" />
-
-      <label for="rf-type">Inspection Type *</label>
-      <select id="rf-type">
-        <option value="In-Person Inspection">In-Person Inspection</option>
-        <option value="Virtual Video Tour">Virtual Video Tour</option>
-        <option value="General Enquiry">General Enquiry</option>
-      </select>
-
-      <button class="lead-form-submit" id="rf-submit">Confirm Viewing</button>
-      <div class="form-cancel" id="rf-cancel">Cancel</div>
-    `;
-
-    messages.appendChild(card);
-    scrollToBottom();
-
-    document.getElementById("rf-cancel").addEventListener("click", removeAllForms);
-    document.getElementById("rf-submit").addEventListener("click", async () => {
-      const name = document.getElementById("rf-name").value.trim();
-      const phone = document.getElementById("rf-phone").value.trim();
-      const email = document.getElementById("rf-email").value.trim();
-      const property = document.getElementById("rf-property").value.trim();
-      const type = document.getElementById("rf-type").value;
-
-      if (!name) { document.getElementById("rf-name-err").textContent = "Name is required"; document.getElementById("rf-name-err").style.display = "block"; return; }
-      if (!phone) { document.getElementById("rf-phone-err").textContent = "Phone is required"; document.getElementById("rf-phone-err").style.display = "block"; return; }
-
-      removeAllForms();
-      showTyping();
-
-      const result = await sendToBot("inspection_confirmed", null, {
-        start: slot.start, end: slot.end, label: slotLabel,
-        name, phone, email, property_interest: property, inspection_type: type
-      });
-
-      hideTyping();
-      addMessage(result.message?.text || "Inspection confirmed! We look forward to meeting you.", "bot");
-    });
-  }
-
-  function showSlotPicker(slots) {
-    chatForm.style.display = "none";
-    const container = document.createElement("div");
-    container.className = "slot-picker"; container.id = "slot-picker";
-
-    const label = document.createElement("div");
-    label.className = "slot-date-label"; label.textContent = "Select an available viewing time:";
-    container.appendChild(label);
-
-    slots.forEach(slot => {
-      const btn = document.createElement("button");
-      btn.className = "slot-btn";
-      btn.innerHTML = `<strong>${slot.label}</strong> (30 min inspection)`;
-      btn.addEventListener("click", () => {
-        container.remove();
-        showBookingForm(slot, slot.label);
-      });
-      container.appendChild(btn);
-    });
-
-    const cancel = document.createElement("div");
-    cancel.className = "form-cancel"; cancel.textContent = "None of these times work";
-    cancel.addEventListener("click", () => {
-      container.remove();
-      chatForm.style.display = "flex";
-      addMessage("None of these times work for me", "user");
-      addMessage("No problem. Tell me your preferred day and time and our team will get in touch.", "bot");
-    });
-    container.appendChild(cancel);
-
-    messages.appendChild(container);
-    scrollToBottom();
-  }
-
-  async function sendToBot(text, leadData = null, bookingData = null) {
-    try {
-      const res = await fetch(EDGE_FUNCTION_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "apikey": SUPABASE_ANON_KEY,
-          "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
-          "x-session-id": _sessionId,
-        },
-        body: JSON.stringify({ message: text, lead_data: leadData, booking_data: bookingData }),
-      });
-      return res.json();
-    } catch (err) {
-      console.error(err);
-      return { ok: false, message: { text: "Sorry, I am having trouble connecting right now." } };
-    }
-  }
-
-  chatForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const text = chatInput.value.trim();
-    if (!text) return;
-    addMessage(text, "user");
-    chatInput.value = "";
-    showTyping();
-
-    const result = await sendToBot(text);
-    hideTyping();
-
-    addMessage(result.message?.text || "No response received.", "bot");
-    if (result.scheduling?.slots?.length) showSlotPicker(result.scheduling.slots);
-    if (result.properties?.length) renderProperties(result.properties);
-  });
-
-  // ========== VOICE INTEGRATION (STT/TTS) ==========
-  let _voiceEnabled = false;
-  const voiceToggleBtn = document.getElementById("voice-toggle");
-  const micBtn = document.getElementById("chat-mic");
-  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-  if (SpeechRec) {
-    const recognition = new SpeechRec();
-    recognition.lang = "en-AU";
-    recognition.onresult = (e) => {
-      chatInput.value = e.results[0][0].transcript;
-      chatForm.dispatchEvent(new Event("submit"));
-    };
-    recognition.onend = () => micBtn.classList.remove("recording");
-    micBtn.addEventListener("click", () => {
-      micBtn.classList.add("recording");
-      recognition.start();
-    });
-  } else {
-    micBtn.style.display = "none";
-  }
-
-  voiceToggleBtn.addEventListener("click", () => {
-    _voiceEnabled = !_voiceEnabled;
-    voiceToggleBtn.textContent = _voiceEnabled ? "🔊" : "🔇";
-    voiceToggleBtn.classList.toggle("active", _voiceEnabled);
-  });
-
-  function speakBotMessage(text) {
-    if (!_voiceEnabled || !window.speechSynthesis) return;
-    window.speechSynthesis.cancel();
-    const cleanText = text.replace(/[*_#]/g, "");
-    const utterance = new SpeechSynthesisUtterance(cleanText);
-    utterance.lang = "en-AU";
-    window.speechSynthesis.speak(utterance);
-  }
-</script>
-</body>
-</html>
+  function showBookingForm(
