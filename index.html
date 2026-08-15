@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Horizon Realty — Sydney Rental Properties & Assistant</title>
+  <title>Horizon Realty — Sydney Rental Assistant</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    /* ========== BASE ========== */
+    /* ========== BASE & THEME ========== */
     :root {
       --primary: #2563eb;
       --primary-dark: #1d4ed8;
@@ -56,9 +56,10 @@
     /* ========== WEBSITE PROPERTY GRID ========== */
     .website-property-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 20px;
       margin-bottom: 40px;
+      min-height: 200px;
     }
 
     .web-card {
@@ -320,140 +321,8 @@
     <p>All prices quoted in AUD per week ($/week) with standard 4-week bond. Chat with Sarah below to schedule viewings or apply.</p>
   </div>
 
-  <div class="website-property-grid">
-
-    <div class="web-card" id="card-PROP-AU-101">
-      <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=700&auto=format&fit=crop&q=80" alt="Studio in Sydney CBD" />
-      <div class="web-card-body">
-        <div class="web-price-row">
-          <span class="web-price">$550</span>
-          <span class="web-price-period">AUD / week ($2,390 pcm)</span>
-        </div>
-        <div class="web-card-title">Modern Studio in Sydney CBD</div>
-        <div class="web-card-address">452 George Street, Apt 4B, Sydney NSW 2000</div>
-        
-        <div class="web-features">
-          <span>🛏 Studio</span>
-          <span>🚿 1 Bath</span>
-          <span>🚗 0 Car</span>
-        </div>
-
-        <div class="web-meta-row"><strong>Bond:</strong> $2,200 (4 weeks)</div>
-        <div class="web-meta-row"><strong>Available:</strong> 1 Sep 2026</div>
-        <div class="web-meta-row"><strong>Pets:</strong> Considered on application</div>
-
-        <div class="web-tags">
-          <span class="web-tag">Internal Laundry</span>
-          <span class="web-tag">Pool & Gym</span>
-          <span class="web-tag">NBN Ready</span>
-        </div>
-
-        <div class="web-card-actions">
-          <button class="btn-action btn-action-primary" onclick="initiateInspection('452 George Street, Sydney (PROP-AU-101)')">Book Inspection</button>
-          <button class="btn-action btn-action-outline" onclick="askSarahAbout('Tell me more about the studio at 452 George Street, Sydney')">Ask Sarah</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="web-card" id="card-PROP-AU-102">
-      <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=700&auto=format&fit=crop&q=80" alt="Harbourside 2-Bed Pyrmont" />
-      <div class="web-card-body">
-        <div class="web-price-row">
-          <span class="web-price">$850</span>
-          <span class="web-price-period">AUD / week ($3,695 pcm)</span>
-        </div>
-        <div class="web-card-title">Harbourside 2-Bed Apartment</div>
-        <div class="web-card-address">12 Bowman Street, Unit 1402, Pyrmont NSW 2009</div>
-        
-        <div class="web-features">
-          <span>🛏 2 Bed</span>
-          <span>🚿 2 Bath</span>
-          <span>🚗 1 Secure Car</span>
-        </div>
-
-        <div class="web-meta-row"><strong>Bond:</strong> $3,400 (4 weeks)</div>
-        <div class="web-meta-row"><strong>Available:</strong> Available Now</div>
-        <div class="web-meta-row"><strong>Pets:</strong> Subject to Strata Approval</div>
-
-        <div class="web-tags">
-          <span class="web-tag">Ducted A/C</span>
-          <span class="web-tag">Harbour Views</span>
-          <span class="web-tag">Rooftop Pool</span>
-        </div>
-
-        <div class="web-card-actions">
-          <button class="btn-action btn-action-primary" onclick="initiateInspection('12 Bowman Street, Pyrmont (PROP-AU-102)')">Book Inspection</button>
-          <button class="btn-action btn-action-outline" onclick="askSarahAbout('What are the strata rules and bond for 12 Bowman Street Pyrmont?')">Ask Sarah</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="web-card" id="card-PROP-AU-103">
-      <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=700&auto=format&fit=crop&q=80" alt="Family Home Paddington" />
-      <div class="web-card-body">
-        <div class="web-price-row">
-          <span class="web-price">$1,100</span>
-          <span class="web-price-period">AUD / week ($4,780 pcm)</span>
-        </div>
-        <div class="web-card-title">Charming 3-Bed Family Terrace</div>
-        <div class="web-card-address">78 Elmwood Road, Paddington NSW 2021</div>
-        
-        <div class="web-features">
-          <span>🛏 3 Bed</span>
-          <span>🚿 2 Bath</span>
-          <span>🚗 2 Garage</span>
-        </div>
-
-        <div class="web-meta-row"><strong>Bond:</strong> $4,400 (4 weeks)</div>
-        <div class="web-meta-row"><strong>Available:</strong> 1 Oct 2026</div>
-        <div class="web-meta-row"><strong>Pets:</strong> Pet Friendly (Dogs & Cats)</div>
-
-        <div class="web-tags">
-          <span class="web-tag">Fenced Yard</span>
-          <span class="web-tag">Double Garage</span>
-          <span class="web-tag">Solar Panels</span>
-        </div>
-
-        <div class="web-card-actions">
-          <button class="btn-action btn-action-primary" onclick="initiateInspection('78 Elmwood Road, Paddington (PROP-AU-103)')">Book Inspection</button>
-          <button class="btn-action btn-action-outline" onclick="askSarahAbout('Is 78 Elmwood Road Paddington pet-friendly for a large dog?')">Ask Sarah</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="web-card" id="card-PROP-AU-104">
-      <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=700&auto=format&fit=crop&q=80" alt="Penthouse Surry Hills" />
-      <div class="web-card-body">
-        <div class="web-price-row">
-          <span class="web-price">$1,950</span>
-          <span class="web-price-period">AUD / week ($8,475 pcm)</span>
-        </div>
-        <div class="web-card-title">Skyline Penthouse Loft</div>
-        <div class="web-card-address">88 Crown Street, PH-A, Surry Hills NSW 2010</div>
-        
-        <div class="web-features">
-          <span>🛏 3 Bed</span>
-          <span>🚿 3 Bath</span>
-          <span>🚗 2 Basement</span>
-        </div>
-
-        <div class="web-meta-row"><strong>Bond:</strong> $7,800 (4 weeks)</div>
-        <div class="web-meta-row"><strong>Available:</strong> Available Now</div>
-        <div class="web-meta-row"><strong>Pets:</strong> Small pets considered</div>
-
-        <div class="web-tags">
-          <span class="web-tag">Direct Lift Access</span>
-          <span class="web-tag">Wrap-around Terrace</span>
-          <span class="web-tag">Miele Kitchen</span>
-        </div>
-
-        <div class="web-card-actions">
-          <button class="btn-action btn-action-primary" onclick="initiateInspection('88 Crown Street, Surry Hills (PROP-AU-104)')">Book Inspection</button>
-          <button class="btn-action btn-action-outline" onclick="askSarahAbout('Can I arrange a private viewing for the Surry Hills Penthouse?')">Ask Sarah</button>
-        </div>
-      </div>
-    </div>
-
+  <div class="website-property-grid" id="website-property-grid">
+    <div style="color: #64748b; font-size: 14px; padding: 20px;">Loading available properties from database...</div>
   </div>
 
   <div class="banner-highlight">
@@ -487,97 +356,4 @@
 </div>
 
 <script>
-  // ========== CONFIG ==========
-  const EDGE_FUNCTION_URL = "https://rwyifppvzedmehzptrmt.supabase.co/functions/v1/rental-handler";
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ3eWlmcHB2emVkbWVoenB0cm10Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY3ODk4OTQsImV4cCI6MjEwMjM2NTg5NH0.yFriJtO7pmMVo5Q-8LA5ysrU-cHF3skt3zH2sRd8_GE";
-
-  let _sessionId = (() => {
-    const KEY = "horizon_rental_session_id";
-    const existing = localStorage.getItem(KEY);
-    if (existing && /^[a-zA-Z0-9_]{1,80}$/.test(existing)) return existing;
-    const id = "r_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
-    localStorage.setItem(KEY, id);
-    return id;
-  })();
-
-  const panel = document.getElementById("chatbot-panel");
-  const messages = document.getElementById("chat-messages");
-  const chatForm = document.getElementById("chat-form");
-  const chatInput = document.getElementById("chat-input");
-
-  function openChat() {
-    panel.style.display = "flex";
-  }
-
-  document.getElementById("chatbot-toggle").addEventListener("click", openChat);
-  document.getElementById("chatbot-close").addEventListener("click", () => panel.style.display = "none");
-  document.getElementById("chatbot-expand").addEventListener("click", () => {
-    panel.classList.toggle("expanded");
-  });
-
-  document.getElementById("chatbot-refresh").addEventListener("click", () => {
-    messages.innerHTML = '<div class="message bot">G\'day! I\'m Sarah from Horizon Realty. How can I help you today? You can ask me about available Sydney rentals, pet policies, NSW bond requirements, or book an inspection!</div>';
-    removeAllForms();
-    _sessionId = "r_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
-    localStorage.setItem("horizon_rental_session_id", _sessionId);
-  });
-
-  const scrollToBottom = () => messages.scrollTop = messages.scrollHeight;
-
-  function renderMarkdown(text) {
-    const escaped = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-    return escaped.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/\*(.+?)\*/g, "<em>$1</em>").replace(/\n/g, "<br>");
-  }
-
-  function addMessage(text, sender = "bot", speakIt = true) {
-    const el = document.createElement("div");
-    el.className = `message ${sender}`;
-    if (sender === "bot") {
-      el.innerHTML = renderMarkdown(text);
-      if (speakIt && typeof speakBotMessage === "function") speakBotMessage(text);
-    } else {
-      el.textContent = text;
-    }
-    messages.appendChild(el);
-    scrollToBottom();
-  }
-
-  function showTyping() {
-    const el = document.createElement("div");
-    el.className = "typing"; el.id = "typing-indicator"; el.textContent = "Sarah is typing...";
-    messages.appendChild(el); scrollToBottom();
-  }
-  const hideTyping = () => document.getElementById("typing-indicator")?.remove();
-
-  function removeAllForms() {
-    document.getElementById("slot-picker")?.remove();
-    document.getElementById("booking-form-card")?.remove();
-    document.getElementById("custom-time-form-card")?.remove();
-    chatForm.style.display = "flex";
-  }
-
-  function renderProperties(properties = []) {
-    if (!properties.length) return;
-    const grid = document.createElement("div");
-    grid.className = "bot-property-list";
-
-    properties.forEach(p => {
-      const card = document.createElement("div");
-      card.className = "property-card";
-      const img = p.image_urls && p.image_urls.length ? p.image_urls[0] : "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=500";
-      card.innerHTML = `
-        <img src="${img}" alt="${p.title || 'Property'}" />
-        <div class="property-content">
-          <div class="property-price">$${p.rent_per_week || p.price_per_week} AUD / week</div>
-          <div class="property-title">${p.address || ''}, ${p.suburb || ''}</div>
-          <div class="property-meta">🛏 ${p.bedrooms} Bed | 🛁 ${p.bathrooms} Bath | 🚗 ${p.parking_spaces || p.car_spaces || 0} Car</div>
-        </div>
-      `;
-      grid.appendChild(card);
-    });
-
-    messages.appendChild(grid);
-    scrollToBottom();
-  }
-
-  function showBookingForm(
+  // ========== SUPABASE CONFIG ==========
