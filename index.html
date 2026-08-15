@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Horizon Realty — Rental Assistant</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* ========== BASE ========== */
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; background: #f8fafc; color: #1e293b; }
+    header { background: #0f172a; color: white; padding: 24px; text-align: center; }
+    main { padding: 40px 20px; max-width: 800px; margin: auto; background: white; border-radius: 12px; margin-top: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+    .highlight { background: #eff6ff; border-left: 4px solid #2563eb; padding: 16px; border-radius: 4px; margin-top: 20px; }
+
+    /* ========== CHAT TOGGLE BUTTON ========== */
+    .chatbot-toggle {
+      position: fixed; right: 20px; bottom: 20px;
+      background: #2563eb; color: white;
+      border: none; border-radius: 999px;
+      padding: 14px 20px; font-size: 15px; font-weight: 600;
+      cursor: pointer; box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.4); z-index: 1000;
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    /* ========== CHAT PANEL ========== */
+    .chatbot-panel {
+      position: fixed; right: 20px; bottom: 80px;
+      width: 380px; max-width: calc(100vw - 24px); height: 560px;
+      background: white; border-radius: 16px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+      display: none; flex-direction: column;
+      overflow: hidden; z-index: 1000; border: 1px solid #e2e8f0;
+      transition: width 0.25s ease, height 0.25s ease;
+    }
+    .chatbot-panel.expanded { width: 500px; height: 720px; }
+
+    .chatbot-header {
+      background: #0f172a; color: white;
+      padding: 14px 18px; font-weight: 600;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .chatbot-header-actions { display: flex; gap: 8px; align-items: center; }
+    .chatbot-btn-action {
+      background: transparent; border: none; color: #94a3b8; font-size: 16px; cursor: pointer;
+      padding: 4px; line-height: 1; transition: color 0.15s;
+    }
+    .chatbot-btn-action:hover { color: white; }
+
+    /* ========== MESSAGES ========== */
+    .chat-messages { flex: 1; overflow-y: auto; padding: 16px; background: #f8fafc; }
+
+    .message {
+      margin-bottom: 12px; padding: 12px 14px;
+      border-radius: 12px; max-width: 85%;
+      white-space: pre-wrap; line-height: 1.45;
+      font-size: 14px;
+    }
+    .message.user { background: #2563eb; color: white; margin-left: auto; border-bottom-right-radius: 2px; }
+    .message.bot  { background: white; color: #1e293b; margin-right: auto; border: 1px solid #e2e8f0; border-bottom-left-radius: 2px; }
+
+    .typing { font-size: 12px; color: #64748b; margin-bottom: 10px; font-style: italic; }
+
+    /* ========== PROPERTY CARDS ========== */
+    .bot-property-list { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 14px; }
+    .property-card {
+      display: block; text-decoration: none; color: inherit;
+      background: white; border: 1px solid #e2e8f0; border-radius: 10px; overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .property-card img { width: 100%; height: 160px; object-fit: cover; }
+    .property-content { padding: 12px; }
+    .property-price { font-size: 16px; font-weight: 700; color: #2563eb; margin-bottom: 4px; }
+    .property-title { font-size: 14px; font-weight: 600; color: #0f172a; margin-bottom: 4px; }
+    .property-meta  { font-size: 12px; color: #64748b; }
+
+    /* ========== CONTACT ACTION CARDS ========== */
+    .bot-contact-actions { display: grid; gap: 8px; margin-bottom: 14px; }
+    .contact-card {
+      display: block; padding: 10px 14px; text-decoration: none; color: #334155;
+      background: white; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px;
+    }
+
+    /* ========== FORMS & SLOT PICKER ========== */
+    .lead-form-card {
+      background: white; border: 1px solid #cbd5e1; border-radius: 12px; padding: 16px;
+      margin-bottom: 14px; width: 92%; box-sizing: border-box;
+    }
+    .lead-form-card label { display: block; font-size: 12px; font-weight: 600; color: #475569; margin-top: 8px; }
+    .lead-form-card label:first-of-type { margin-top: 0; }
+    .lead-form-card input, .lead-form-card select {
+      width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px;
+      font-size: 13px; box-sizing: border-box; outline: none; margin-top: 4px;
+    }
+    .lead-form-card input:focus, .lead-form-card select:focus { border-color: #2563eb; }
+    .field-error { font-size: 11px; color: #ef4444; margin-top: 3px; display: none; }
+
+    .lead-form-submit {
+      margin-top: 14px; width: 100%; padding: 10px; background: #2563eb;
+      color: white; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer;
+    }
+    .form-cancel { text-align: center; font-size: 12px; color: #64748b; cursor: pointer; margin-top: 8px; }
+
+    .slot-picker { margin-bottom: 14px; width: 92%; }
+    .slot-date-label { font-size: 12px; font-weight: 700; color: #0f172a; margin-bottom: 6px; }
+    .slot-btn {
+      display: block; width: 100%; padding: 10px 12px; margin-bottom: 6px;
+      background: white; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13px;
+      cursor: pointer; text-align: left;
+    }
+    .slot-btn:hover { border-color: #2563eb; background: #eff6ff; }
+
+    /* ========== INPUT BAR ========== */
+    .chat-input-wrap { display: flex; border-top: 1px solid #e2e8f0; background: white; align-items: center; }
+    .chat-input { flex: 1; padding: 14px; border: none; outline: none; font-size: 14px; }
+    .chat-send  { padding: 14px 18px; border: none; background: #2563eb; color: white; cursor: pointer; font-weight: 600; }
+    .chat-mic {
+      padding: 10px 12px; border: none; background: transparent;
+      cursor: pointer; font-size: 18px; color: #64748b;
+    }
+    .chat-mic.recording { color: #ef4444; animation: mic-pulse 1s infinite; }
+    .voice-toggle { padding: 10px 6px; border: none; background: transparent; cursor: pointer; font-size: 16px; color: #94a3b8; }
+    .voice-toggle.active { color: #2563eb; }
+    @keyframes mic-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Horizon Realty</h1>
+  <p>Find Your Next Rental Home Seamlessly</p>
+</header>
+
+<main>
+  <h2>Looking for a rental?</h2>
+  <p>Our rental specialist Sarah can help you search available listings, understand bond & pet rules, and schedule property inspections.</p>
+  <div class="highlight">💬 Click the button on the bottom right to begin your property search or book a viewing.</div>
+</main>
+
+<button id="chatbot-toggle" class="chatbot-toggle">💬 Find a Home</button>
+
+<div id="chatbot-panel" class="chatbot-panel">
+  <div class="chatbot-header">
+    <span>Sarah • Horizon Realty</span>
+    <div class="chatbot-header-actions">
+      <button id="chatbot-expand" class="chatbot-btn-action" title="Expand">⤢</button>
+      <button id="chatbot-refresh" class="chatbot-btn-action" title="New Conversation">&#8635;</button>
+      <button id="chatbot-close" class="chatbot-btn-action" title="Close">&times;</button>
+    </div>
+  </div>
+  <div id="chat-messages" class="chat-messages">
+    <div class="message bot">Hello! I'm Sarah from Horizon Realty. How can I help you today? You can ask me about available rentals, pet policies, or book an inspection!</div>
+  </div>
+  <form id="chat-form" class="chat-input-wrap">
+    <input id="chat-input" class="chat-input" type="text" placeholder="Ask about listings, inspections, bond..." autocomplete="off" maxlength="300" />
+    <button type="button" id="voice-toggle" class="voice-toggle" title="Voice mode OFF">🔇</button>
+    <button type="button" id="chat-mic" class="chat-mic" title="Speak">🎤</button>
+    <button type="submit" class="chat-send">Send</button>
+  </form>
+</div>
+
+<script>
+  // ========== CONFIG ==========
+  // Replace these with your target Supabase Edge Function credentials for the rental project
+  const EDGE_FUNCTION_URL = "https://<YOUR-RENTAL-PROJECT-ID>.supabase.co/functions/v1/rental-handler";
+  const SUPABASE_ANON_KEY = "<YOUR-RENTAL-ANON-KEY>";
+
+  let _sessionId = (() => {
+    const KEY = "horizon_rental_session_id";
+    const existing = localStorage.getItem(KEY);
+    if (existing && /^[a-zA-Z0-9_]{1,80}$/.test(existing)) return existing;
+    const id = "r_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+    localStorage.setItem(KEY, id);
+    return id;
+  })();
+
+  const panel = document.getElementById("chatbot-panel");
+  const messages = document.getElementById("chat-messages");
+  const chatForm = document.getElementById("chat-form");
+  const chatInput = document.getElementById("chat-input");
+
+  document.getElementById("chatbot-toggle").addEventListener("click", () => panel.style.display = "flex");
+  document.getElementById("chatbot-close").addEventListener("click", () => panel.style.display = "none");
+  document.getElementById("chatbot-expand").addEventListener("click", () => {
+    panel.classList.toggle("expanded");
+  });
+
+  document.getElementById("chatbot-refresh").addEventListener("click", () => {
+    messages.innerHTML = '<div class="message bot">Hello! I\'m Sarah from Horizon Realty. How can I help you today? You can ask me about available rentals, pet policies, or book an inspection!</div>';
+    removeAllForms();
+    _sessionId = "r_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+    localStorage.setItem("horizon_rental_session_id", _sessionId);
+  });
+
+  const scrollToBottom = () => messages.scrollTop = messages.scrollHeight;
+
+  function renderMarkdown(text) {
+    const escaped = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    return escaped.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/\*(.+?)\*/g, "<em>$1</em>").replace(/\n/g, "<br>");
+  }
+
+  function addMessage(text, sender = "bot", speakIt = true) {
+    const el = document.createElement("div");
+    el.className = `message ${sender}`;
+    if (sender === "bot") {
+      el.innerHTML = renderMarkdown(text);
+      if (speakIt && typeof speakBotMessage === "function") speakBotMessage(text);
+    } else {
+      el.textContent = text;
+    }
+    messages.appendChild(el);
+    scrollToBottom();
+  }
+
+  function showTyping() {
+    const el = document.createElement("div");
+    el.className = "typing"; el.id = "typing-indicator"; el.textContent = "Sarah is typing...";
+    messages.appendChild(el); scrollToBottom();
+  }
+  const hideTyping = () => document.getElementById("typing-indicator")?.remove();
+
+  function removeAllForms() {
+    document.getElementById("slot-picker")?.remove();
+    document.getElementById("booking-form-card")?.remove();
+    document.getElementById("custom-time-form-card")?.remove();
+    chatForm.style.display = "flex";
+  }
+
+  function renderProperties(properties = []) {
+    if (!properties.length) return;
+    const grid = document.createElement("div");
+    grid.className = "bot-property-list";
+
+    properties.forEach(p => {
+      const card = document.createElement("div");
+      card.className = "property-card";
+      const img = p.image_urls && p.image_urls.length ? p.image_urls[0] : "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=500";
+      card.innerHTML = `
+        <img src="${img}" alt="${p.title}" />
+        <div class="property-content">
+          <div class="property-price">$${p.rent_per_week} / week</div>
+          <div class="property-title">${p.address}, ${p.suburb}</div>
+          <div class="property-meta">🛏 ${p.bedrooms} Bed | 🛁 ${p.bathrooms} Bath | 🚗 ${p.parking_spaces} Parking</div>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+
+    messages.appendChild(grid);
+    scrollToBottom();
+  }
+
+  function showBookingForm(slot, slotLabel) {
+    chatForm.style.display = "none";
+    const card = document.createElement("div");
+    card.className = "lead-form-card"; card.id = "booking-form-card";
+
+    card.innerHTML = `
+      <div style="font-size:13px;font-weight:700;color:#0f172a;margin-bottom:8px;">Complete Inspection Booking</div>
+      <label for="rf-name">Full Name *</label>
+      <input id="rf-name" type="text" placeholder="e.g. Alex Morgan" />
+      <div class="field-error" id="rf-name-err"></div>
+
+      <label for="rf-phone">Mobile Number *</label>
+      <input id="rf-phone" type="tel" placeholder="e.g. 0412 345 678" />
+      <div class="field-error" id="rf-phone-err"></div>
+
+      <label for="rf-email">Email Address</label>
+      <input id="rf-email" type="email" placeholder="e.g. alex@example.com" />
+
+      <label for="rf-property">Property Address of Interest</label>
+      <input id="rf-property" type="text" placeholder="e.g. 14 Smith St, Parramatta" />
+
+      <label for="rf-type">Inspection Type *</label>
+      <select id="rf-type">
+        <option value="In-Person Inspection">In-Person Inspection</option>
+        <option value="Virtual Video Tour">Virtual Video Tour</option>
+        <option value="General Enquiry">General Enquiry</option>
+      </select>
+
+      <button class="lead-form-submit" id="rf-submit">Confirm Viewing</button>
+      <div class="form-cancel" id="rf-cancel">Cancel</div>
+    `;
+
+    messages.appendChild(card);
+    scrollToBottom();
+
+    document.getElementById("rf-cancel").addEventListener("click", removeAllForms);
+    document.getElementById("rf-submit").addEventListener("click", async () => {
+      const name = document.getElementById("rf-name").value.trim();
+      const phone = document.getElementById("rf-phone").value.trim();
+      const email = document.getElementById("rf-email").value.trim();
+      const property = document.getElementById("rf-property").value.trim();
+      const type = document.getElementById("rf-type").value;
+
+      if (!name) { document.getElementById("rf-name-err").textContent = "Name is required"; document.getElementById("rf-name-err").style.display = "block"; return; }
+      if (!phone) { document.getElementById("rf-phone-err").textContent = "Phone is required"; document.getElementById("rf-phone-err").style.display = "block"; return; }
+
+      removeAllForms();
+      showTyping();
+
+      const result = await sendToBot("inspection_confirmed", null, {
+        start: slot.start, end: slot.end, label: slotLabel,
+        name, phone, email, property_interest: property, inspection_type: type
+      });
+
+      hideTyping();
+      addMessage(result.message?.text || "Inspection confirmed! We look forward to meeting you.", "bot");
+    });
+  }
+
+  function showSlotPicker(slots) {
+    chatForm.style.display = "none";
+    const container = document.createElement("div");
+    container.className = "slot-picker"; container.id = "slot-picker";
+
+    const label = document.createElement("div");
+    label.className = "slot-date-label"; label.textContent = "Select an available viewing time:";
+    container.appendChild(label);
+
+    slots.forEach(slot => {
+      const btn = document.createElement("button");
+      btn.className = "slot-btn";
+      btn.innerHTML = `<strong>${slot.label}</strong> (30 min inspection)`;
+      btn.addEventListener("click", () => {
+        container.remove();
+        showBookingForm(slot, slot.label);
+      });
+      container.appendChild(btn);
+    });
+
+    const cancel = document.createElement("div");
+    cancel.className = "form-cancel"; cancel.textContent = "None of these times work";
+    cancel.addEventListener("click", () => {
+      container.remove();
+      chatForm.style.display = "flex";
+      addMessage("None of these times work for me", "user");
+      addMessage("No problem. Tell me your preferred day and time and our team will get in touch.", "bot");
+    });
+    container.appendChild(cancel);
+
+    messages.appendChild(container);
+    scrollToBottom();
+  }
+
+  async function sendToBot(text, leadData = null, bookingData = null) {
+    try {
+      const res = await fetch(EDGE_FUNCTION_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "apikey": SUPABASE_ANON_KEY,
+          "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
+          "x-session-id": _sessionId,
+        },
+        body: JSON.stringify({ message: text, lead_data: leadData, booking_data: bookingData }),
+      });
+      return res.json();
+    } catch (err) {
+      console.error(err);
+      return { ok: false, message: { text: "Sorry, I am having trouble connecting right now." } };
+    }
+  }
+
+  chatForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const text = chatInput.value.trim();
+    if (!text) return;
+    addMessage(text, "user");
+    chatInput.value = "";
+    showTyping();
+
+    const result = await sendToBot(text);
+    hideTyping();
+
+    addMessage(result.message?.text || "No response received.", "bot");
+    if (result.scheduling?.slots?.length) showSlotPicker(result.scheduling.slots);
+    if (result.properties?.length) renderProperties(result.properties);
+  });
+
+  // ========== VOICE INTEGRATION (STT/TTS) ==========
+  let _voiceEnabled = false;
+  const voiceToggleBtn = document.getElementById("voice-toggle");
+  const micBtn = document.getElementById("chat-mic");
+  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (SpeechRec) {
+    const recognition = new SpeechRec();
+    recognition.lang = "en-AU";
+    recognition.onresult = (e) => {
+      chatInput.value = e.results[0][0].transcript;
+      chatForm.dispatchEvent(new Event("submit"));
+    };
+    recognition.onend = () => micBtn.classList.remove("recording");
+    micBtn.addEventListener("click", () => {
+      micBtn.classList.add("recording");
+      recognition.start();
+    });
+  } else {
+    micBtn.style.display = "none";
+  }
+
+  voiceToggleBtn.addEventListener("click", () => {
+    _voiceEnabled = !_voiceEnabled;
+    voiceToggleBtn.textContent = _voiceEnabled ? "🔊" : "🔇";
+    voiceToggleBtn.classList.toggle("active", _voiceEnabled);
+  });
+
+  function speakBotMessage(text) {
+    if (!_voiceEnabled || !window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const cleanText = text.replace(/[*_#]/g, "");
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.lang = "en-AU";
+    window.speechSynthesis.speak(utterance);
+  }
+</script>
+</body>
+</html>
