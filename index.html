@@ -500,13 +500,16 @@
   function renderSlotPicker(slots = []) {
     if (!slots || !slots.length) return;
 
+    // Remove any previous active slot pickers
+    document.querySelectorAll(".slot-picker").forEach(el => el.remove());
+
     const container = document.createElement("div");
     container.className = "slot-picker";
 
     slots.forEach(slot => {
       const btn = document.createElement("button");
       btn.className = "slot-btn";
-      btn.innerHTML = `📅 <strong>${slot.label}</strong> (30 min inspection)`;
+      btn.innerHTML = `📅 <strong>${slot.label}</strong> <br><small style="color:#64748b;">(30 min inspection)</small>`;
       btn.addEventListener("click", () => {
         container.remove();
         showBookingForm(slot);
@@ -635,7 +638,7 @@
 
     addMessage(result.message?.text || "I received your message. How else can I assist with your rental search?", "bot");
 
-    // CRITICAL: Render interactive buttons when slots are returned
+    // CRITICAL: Render interactive slot buttons when scheduling payload is returned
     if (result.scheduling && Array.isArray(result.scheduling.slots) && result.scheduling.slots.length > 0) {
       renderSlotPicker(result.scheduling.slots);
     }
