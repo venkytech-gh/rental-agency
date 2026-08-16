@@ -43,8 +43,8 @@
 
     .website-property-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
       margin-bottom: 40px;
     }
 
@@ -64,13 +64,13 @@
     }
     .web-card img {
       width: 100%;
-      height: 180px;
+      height: 200px;
       object-fit: cover;
       background-color: #cbd5e1;
     }
 
     .web-card-body {
-      padding: 16px;
+      padding: 18px;
       flex: 1;
       display: flex;
       flex-direction: column;
@@ -82,10 +82,10 @@
       gap: 6px;
       margin-bottom: 4px;
     }
-    .web-price { font-size: 20px; font-weight: 700; color: var(--primary); }
+    .web-price { font-size: 22px; font-weight: 700; color: var(--primary); }
     .web-price-period { font-size: 12px; color: var(--text-muted); }
 
-    .web-card-title { font-size: 15px; font-weight: 600; color: var(--text-main); margin-bottom: 4px; }
+    .web-card-title { font-size: 16px; font-weight: 600; color: var(--text-main); margin-bottom: 4px; }
     .web-card-address { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; }
 
     .web-features {
@@ -127,13 +127,14 @@
     }
 
     .btn-action {
-      padding: 9px 10px;
+      padding: 10px;
       border-radius: 6px;
       font-size: 12px;
       font-weight: 600;
       cursor: pointer;
       text-align: center;
       border: 1px solid transparent;
+      transition: all 0.15s ease;
     }
     .btn-action-primary { background: var(--primary); color: white; border: none; }
     .btn-action-primary:hover { background: var(--primary-dark); }
@@ -143,8 +144,8 @@
     .banner-highlight {
       background: #eff6ff;
       border-left: 4px solid var(--primary);
-      padding: 16px;
-      border-radius: 6px;
+      padding: 18px 22px;
+      border-radius: 8px;
       font-size: 14px;
       color: #1e3a8a;
       display: flex;
@@ -270,8 +271,14 @@
     .chat-input { flex: 1; padding: 14px; border: none; outline: none; font-size: 14px; }
     .chat-send  { padding: 14px 18px; border: none; background: var(--primary); color: white; cursor: pointer; font-weight: 600; }
     .chat-mic { padding: 10px 12px; border: none; background: transparent; cursor: pointer; font-size: 18px; color: #64748b; }
+    .chat-mic.recording { color: #dc2626; animation: pulse 1s infinite alternate; }
     .voice-toggle { padding: 10px 6px; border: none; background: transparent; cursor: pointer; font-size: 16px; color: #94a3b8; }
     .voice-toggle.active { color: var(--primary); }
+
+    @keyframes pulse {
+      from { transform: scale(1); }
+      to { transform: scale(1.15); }
+    }
   </style>
 </head>
 <body>
@@ -287,8 +294,7 @@
     <p>All prices quoted in AUD per week ($/week) with standard 4-week bond. Chat with Sarah below to schedule viewings or apply.</p>
   </div>
 
-  <div class="website-property-grid" id="website-property-grid">
-    </div>
+  <div class="website-property-grid" id="website-property-grid"></div>
 
   <div class="banner-highlight">
     <div>
@@ -314,13 +320,14 @@
   </div>
   <form id="chat-form" class="chat-input-wrap">
     <input id="chat-input" class="chat-input" type="text" placeholder="Ask about rent, suburbs, bond, viewings..." autocomplete="off" maxlength="300" />
-    <button type="button" id="voice-toggle" class="voice-toggle" title="Voice mode OFF">🔇</button>
-    <button type="button" id="chat-mic" class="chat-mic" title="Speak">🎤</button>
+    <button type="button" id="voice-toggle" class="voice-toggle" title="Speaker TTS Toggle">🔇</button>
+    <button type="button" id="chat-mic" class="chat-mic" title="Speak into Microphone">🎤</button>
     <button type="submit" class="chat-send">Send</button>
   </form>
 </div>
 
 <script>
+  // Symmetrical 6-Property Fallback Grid
   const FALLBACK_PROPERTIES = [
     {
       id: "george-st",
@@ -331,8 +338,8 @@
       bedrooms: 0,
       bathrooms: 1,
       parking_spaces: 0,
-      pet_friendly: true,
-      available_from: "2026-09-01",
+      pet_friendly: false,
+      available_from: "Available Now",
       features: ["Internal Laundry", "Balcony", "Gym & Pool"],
       image_urls: ["https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=700&auto=format&fit=crop&q=80"]
     },
@@ -345,7 +352,7 @@
       bedrooms: 2,
       bathrooms: 2,
       parking_spaces: 1,
-      pet_friendly: false,
+      pet_friendly: true,
       available_from: "Available Now",
       features: ["Ducted AC", "Rooftop Pool", "Harbour Views"],
       image_urls: ["https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=700&auto=format&fit=crop&q=80"]
@@ -360,7 +367,7 @@
       bathrooms: 2,
       parking_spaces: 2,
       pet_friendly: true,
-      available_from: "2026-10-01",
+      available_from: "Available Now",
       features: ["Fenced Backyard", "Double Garage", "Solar Panels"],
       image_urls: ["https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=700&auto=format&fit=crop&q=80"]
     },
@@ -373,10 +380,38 @@
       bedrooms: 3,
       bathrooms: 3,
       parking_spaces: 2,
-      pet_friendly: true,
+      pet_friendly: false,
       available_from: "Available Now",
       features: ["Direct Lift Access", "Wrap Terrace", "Miele Kitchen"],
       image_urls: ["https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=700&auto=format&fit=crop&q=80"]
+    },
+    {
+      id: "campbell-pde",
+      title: "Sunlit Beachfront 1-Bedroom Apartment",
+      address: "142 Campbell Parade, Apt 3",
+      suburb: "Bondi Beach",
+      rent_per_week: 750,
+      bedrooms: 1,
+      bathrooms: 1,
+      parking_spaces: 1,
+      pet_friendly: true,
+      available_from: "Available Now",
+      features: ["Ocean Views", "Timber Floors", "Moments to Sand"],
+      image_urls: ["https://images.unsplash.com/photo-1515263487990-61b07816b324?w=700&auto=format&fit=crop&q=80"]
+    },
+    {
+      id: "walker-st",
+      title: "Executive 2-Bed High-Rise with Harbour Views",
+      address: "100 Walker Street, Suite 2204",
+      suburb: "North Sydney",
+      rent_per_week: 920,
+      bedrooms: 2,
+      bathrooms: 2,
+      parking_spaces: 1,
+      pet_friendly: false,
+      available_from: "Available Now",
+      features: ["Concierge", "Floor-to-Ceiling Glass", "Metro Station Access"],
+      image_urls: ["https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=700&auto=format&fit=crop&q=80"]
     }
   ];
 
@@ -385,6 +420,7 @@
   const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ3eWlmcHB2emVkbWVoenB0cm10Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY3ODk4OTQsImV4cCI6MjEwMjM2NTg5NH0.yFriJtO7pmMVo5Q-8LA5ysrU-cHF3skt3zH2sRd8_GE";
 
   let _sessionId = "r_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+  let _voiceEnabled = false;
 
   function renderCardListings(properties) {
     const container = document.getElementById("website-property-grid");
@@ -459,13 +495,19 @@
   const messages = document.getElementById("chat-messages");
   const chatForm = document.getElementById("chat-form");
   const chatInput = document.getElementById("chat-input");
+  const micBtn = document.getElementById("chat-mic");
+  const voiceToggleBtn = document.getElementById("voice-toggle");
 
   function openChat() { panel.style.display = "flex"; }
   document.getElementById("chatbot-toggle").addEventListener("click", openChat);
-  document.getElementById("chatbot-close").addEventListener("click", () => panel.style.display = "none");
+  document.getElementById("chatbot-close").addEventListener("click", () => {
+    panel.style.display = "none";
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  });
   document.getElementById("chatbot-expand").addEventListener("click", () => panel.classList.toggle("expanded"));
 
   document.getElementById("chatbot-refresh").addEventListener("click", () => {
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
     messages.innerHTML = '<div class="message bot">G\'day! I\'m Sarah from Horizon Realty. How can I help you today? You can ask me about available Sydney rentals, pet policies, NSW bond requirements, or book an inspection!</div>';
     _sessionId = "r_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
   });
@@ -477,11 +519,25 @@
     return escaped.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/\*(.+?)\*/g, "<em>$1</em>").replace(/\n/g, "<br>");
   }
 
+  function stripMarkdown(text) {
+    return text.replace(/\*\*(.+?)\*\*/g, "$1").replace(/\*(.+?)\*/g, "$1").replace(/\[(.*?)\]\(.*?\)/g, "$1");
+  }
+
+  function speakText(text) {
+    if (!_voiceEnabled || !('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    const clean = stripMarkdown(text);
+    const utterance = new SpeechSynthesisUtterance(clean);
+    utterance.lang = "en-AU";
+    window.speechSynthesis.speak(utterance);
+  }
+
   function addMessage(text, sender = "bot") {
     const el = document.createElement("div");
     el.className = `message ${sender}`;
     if (sender === "bot") {
       el.innerHTML = renderMarkdown(text);
+      speakText(text);
     } else {
       el.textContent = text;
     }
@@ -496,11 +552,61 @@
   }
   const hideTyping = () => document.getElementById("typing-indicator")?.remove();
 
+  // ========== VOICE (MIC & SPEAKER) FUNCTIONALITY ==========
+  voiceToggleBtn.addEventListener("click", () => {
+    _voiceEnabled = !_voiceEnabled;
+    voiceToggleBtn.textContent = _voiceEnabled ? "🔊" : "🔇";
+    voiceToggleBtn.classList.toggle("active", _voiceEnabled);
+    voiceToggleBtn.title = _voiceEnabled ? "Speaker TTS ON" : "Speaker TTS OFF";
+    if (!_voiceEnabled && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+  });
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (SpeechRecognition) {
+    const recognizer = new SpeechRecognition();
+    recognizer.lang = "en-AU";
+    recognizer.interimResults = false;
+    recognizer.maxAlternatives = 1;
+
+    recognizer.onstart = () => {
+      micBtn.classList.add("recording");
+      chatInput.placeholder = "Listening... Speak now";
+    };
+
+    recognizer.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      chatInput.value = transcript;
+      handleUserMessage(transcript);
+    };
+
+    recognizer.onerror = (e) => {
+      console.warn("Speech recognition error:", e.error);
+      micBtn.classList.remove("recording");
+      chatInput.placeholder = "Ask about rent, suburbs, bond, viewings...";
+    };
+
+    recognizer.onend = () => {
+      micBtn.classList.remove("recording");
+      chatInput.placeholder = "Ask about rent, suburbs, bond, viewings...";
+    };
+
+    micBtn.addEventListener("click", () => {
+      try {
+        recognizer.start();
+      } catch (_) {
+        recognizer.stop();
+      }
+    });
+  } else {
+    micBtn.style.display = "none";
+  }
+
   // ========== RENDER INTERACTIVE SLOT PICKER ==========
   function renderSlotPicker(slots = []) {
     if (!slots || !slots.length) return;
 
-    // Remove any previous active slot pickers
     document.querySelectorAll(".slot-picker").forEach(el => el.remove());
 
     const container = document.createElement("div");
@@ -509,7 +615,7 @@
     slots.forEach(slot => {
       const btn = document.createElement("button");
       btn.className = "slot-btn";
-      btn.innerHTML = `📅 <strong>${slot.label}</strong> <br><small style="color:#64748b;">(30 min inspection)</small>`;
+      btn.innerHTML = `📅 <strong>${slot.label}</strong> <br><small style="color:#64748b;">(30 min inspection • Mon/Wed/Sat AEST)</small>`;
       btn.addEventListener("click", () => {
         container.remove();
         showBookingForm(slot);
@@ -574,7 +680,7 @@
       const type = document.getElementById("bf-type").value;
 
       if (!name || !phone) {
-        alert("Please enter your name and phone number.");
+        alert("Please enter your name and mobile number.");
         return;
       }
 
@@ -608,6 +714,69 @@
     });
   }
 
+  // ========== RENDER CUSTOM TIME REQUEST FORM ==========
+  function showCustomTimeForm() {
+    chatForm.style.display = "none";
+    const card = document.createElement("div");
+    card.className = "booking-card";
+
+    card.innerHTML = `
+      <h4>Request Private Viewing / Custom Time</h4>
+      <p style="font-size: 12px; color: #64748b; margin: 0 0 10px;">Our team accommodates flexible viewings upon request.</p>
+
+      <label>Full Name *</label>
+      <input id="ct-name" type="text" placeholder="e.g. Alex Morgan" />
+
+      <label>Mobile Number (AU) *</label>
+      <input id="ct-phone" type="tel" placeholder="e.g. 0412 345 678" />
+
+      <label>Preferred Date & Time *</label>
+      <input id="ct-time" type="text" placeholder="e.g. Thursday around 5:30 PM" />
+
+      <label>Property Address / Suburb</label>
+      <input id="ct-prop" type="text" placeholder="e.g. 452 George Street, Sydney" />
+
+      <button class="booking-submit-btn" id="ct-submit">Submit Request</button>
+      <div class="booking-cancel" id="ct-cancel">Cancel</div>
+    `;
+
+    messages.appendChild(card);
+    scrollToBottom();
+
+    document.getElementById("ct-cancel").addEventListener("click", () => {
+      card.remove();
+      chatForm.style.display = "flex";
+    });
+
+    document.getElementById("ct-submit").addEventListener("click", async () => {
+      const name = document.getElementById("ct-name").value.trim();
+      const phone = document.getElementById("ct-phone").value.trim();
+      const prefTime = document.getElementById("ct-time").value.trim();
+      const prop = document.getElementById("ct-prop").value.trim();
+
+      if (!name || !phone || !prefTime) {
+        alert("Please provide your name, phone number, and preferred viewing time.");
+        return;
+      }
+
+      card.remove();
+      chatForm.style.display = "flex";
+      showTyping();
+
+      const leadData = {
+        name,
+        phone,
+        preferred_time: prefTime,
+        property_interest: prop || "General Property Enquiry"
+      };
+
+      const result = await sendToBot("custom_time_submission", leadData, null);
+      hideTyping();
+
+      addMessage(result.message?.text || "Thanks! We have received your custom viewing request.", "bot");
+    });
+  }
+
   // ========== SEND TO BACKEND & HANDLE RESPONSE ==========
   async function sendToBot(text, leadData = null, bookingData = null) {
     try {
@@ -638,9 +807,14 @@
 
     addMessage(result.message?.text || "I received your message. How else can I assist with your rental search?", "bot");
 
-    // CRITICAL: Render interactive slot buttons when scheduling payload is returned
+    // Slot picker rendering
     if (result.scheduling && Array.isArray(result.scheduling.slots) && result.scheduling.slots.length > 0) {
       renderSlotPicker(result.scheduling.slots);
+    }
+
+    // Custom time form trigger
+    if (result.show_custom_time_form) {
+      showCustomTimeForm();
     }
   }
 
