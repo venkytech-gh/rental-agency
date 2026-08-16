@@ -166,14 +166,14 @@
 
     .chatbot-panel {
       position: fixed; right: 20px; bottom: 80px;
-      width: 380px; max-width: calc(100vw - 24px); height: 560px;
+      width: 390px; max-width: calc(100vw - 24px); height: 580px;
       background: white; border-radius: 16px;
       box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
       display: none; flex-direction: column;
       overflow: hidden; z-index: 1000; border: 1px solid var(--border);
       transition: width 0.25s ease, height 0.25s ease;
     }
-    .chatbot-panel.expanded { width: 500px; height: 720px; }
+    .chatbot-panel.expanded { width: 520px; height: 720px; }
 
     .chatbot-header {
       background: #0f172a; color: white;
@@ -196,6 +196,75 @@
     .message.user { background: var(--primary); color: white; margin-left: auto; border-bottom-right-radius: 2px; }
     .message.bot  { background: white; color: var(--text-main); margin-right: auto; border: 1px solid var(--border); border-bottom-left-radius: 2px; }
     .typing { font-size: 12px; color: #64748b; margin-bottom: 10px; font-style: italic; }
+
+    /* ========== INTERACTIVE SLOT BUTTONS & FORMS ========== */
+    .slot-picker {
+      margin: 10px 0 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .slot-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: #ffffff;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #0f172a;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .slot-btn:hover {
+      border-color: var(--primary);
+      background: #eff6ff;
+      color: var(--primary);
+    }
+    .slot-cancel-btn {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      cursor: pointer;
+      margin-top: 4px;
+      text-decoration: underline;
+    }
+
+    .booking-card {
+      background: white;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 16px;
+      margin: 10px 0 14px;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    }
+    .booking-card h4 { margin: 0 0 10px; font-size: 14px; color: var(--text-main); }
+    .booking-card label { display: block; font-size: 12px; font-weight: 600; color: #475569; margin-top: 8px; }
+    .booking-card input, .booking-card select {
+      width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px;
+      font-size: 13px; box-sizing: border-box; outline: none; margin-top: 4px;
+    }
+    .booking-card input:focus, .booking-card select:focus { border-color: var(--primary); }
+    .booking-submit-btn {
+      margin-top: 14px; width: 100%; padding: 10px; background: var(--primary);
+      color: white; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer;
+    }
+    .booking-cancel { text-align: center; font-size: 12px; color: var(--text-muted); cursor: pointer; margin-top: 8px; }
+
+    .cal-link-btn {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 6px 12px;
+      background: #eff6ff;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 600;
+    }
 
     .chat-input-wrap { display: flex; border-top: 1px solid var(--border); background: white; align-items: center; }
     .chat-input { flex: 1; padding: 14px; border: none; outline: none; font-size: 14px; }
@@ -252,10 +321,9 @@
 </div>
 
 <script>
-  // Fallback data if DB fetch encounters permission or offline issues
   const FALLBACK_PROPERTIES = [
     {
-      id: "PROP-AU-101",
+      id: "george-st",
       title: "Modern Studio in Sydney CBD",
       address: "452 George Street, Apt 4B",
       suburb: "Sydney",
@@ -269,7 +337,7 @@
       image_urls: ["https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=700&auto=format&fit=crop&q=80"]
     },
     {
-      id: "PROP-AU-102",
+      id: "bowman-st",
       title: "Harbourside 2-Bed Apartment with Water Views",
       address: "12 Bowman Street, Unit 1402",
       suburb: "Pyrmont",
@@ -283,7 +351,7 @@
       image_urls: ["https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=700&auto=format&fit=crop&q=80"]
     },
     {
-      id: "PROP-AU-103",
+      id: "elmwood-rd",
       title: "Charming 3-Bedroom Family Terrace",
       address: "78 Elmwood Road",
       suburb: "Paddington",
@@ -297,7 +365,7 @@
       image_urls: ["https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=700&auto=format&fit=crop&q=80"]
     },
     {
-      id: "PROP-AU-104",
+      id: "crown-st",
       title: "Skyline Luxury Penthouse Loft",
       address: "88 Crown Street, PH-A",
       suburb: "Surry Hills",
@@ -364,7 +432,6 @@
     }).join('');
   }
 
-  // Fetch live properties, fallback automatically if error occurs
   async function loadListings() {
     try {
       const endpoint = `${SUPABASE_BASE_URL}/rest/v1/properties?select=*&order=created_at.desc`;
@@ -377,21 +444,17 @@
       
       const properties = await res.json();
       if (Array.isArray(properties) && properties.length > 0) {
-        console.log("Loaded listings directly from Supabase DB:", properties);
         renderCardListings(properties);
         return;
       }
     } catch (err) {
-      console.warn("Supabase fetch failed, rendering fallback data:", err);
+      console.warn("Supabase fetch fallback:", err);
     }
-    // Render fallbacks if DB returns empty or errors
     renderCardListings(FALLBACK_PROPERTIES);
   }
-
-  // Render on load
   loadListings();
 
-  // Chat UI logic
+  // Chat UI Elements
   const panel = document.getElementById("chatbot-panel");
   const messages = document.getElementById("chat-messages");
   const chatForm = document.getElementById("chat-form");
@@ -433,7 +496,117 @@
   }
   const hideTyping = () => document.getElementById("typing-indicator")?.remove();
 
-  async function sendToBot(text) {
+  // ========== RENDER INTERACTIVE SLOT PICKER ==========
+  function renderSlotPicker(slots = []) {
+    if (!slots || !slots.length) return;
+
+    const container = document.createElement("div");
+    container.className = "slot-picker";
+
+    slots.forEach(slot => {
+      const btn = document.createElement("button");
+      btn.className = "slot-btn";
+      btn.innerHTML = `📅 <strong>${slot.label}</strong> (30 min inspection)`;
+      btn.addEventListener("click", () => {
+        container.remove();
+        showBookingForm(slot);
+      });
+      container.appendChild(btn);
+    });
+
+    const cancelBtn = document.createElement("div");
+    cancelBtn.className = "slot-cancel-btn";
+    cancelBtn.textContent = "None of these times suit me";
+    cancelBtn.addEventListener("click", () => {
+      container.remove();
+      handleUserMessage("None of these inspection times suit me");
+    });
+    container.appendChild(cancelBtn);
+
+    messages.appendChild(container);
+    scrollToBottom();
+  }
+
+  // ========== RENDER LEAD / BOOKING FORM ==========
+  function showBookingForm(slot) {
+    chatForm.style.display = "none";
+    const card = document.createElement("div");
+    card.className = "booking-card";
+
+    card.innerHTML = `
+      <h4>Complete Inspection Booking</h4>
+      <div style="font-size: 12px; color: #64748b; margin-bottom: 8px;">Time: <strong>${slot.label}</strong></div>
+      
+      <label>Full Name *</label>
+      <input id="bf-name" type="text" placeholder="e.g. Alex Morgan" />
+
+      <label>Mobile Number (AU) *</label>
+      <input id="bf-phone" type="tel" placeholder="e.g. 0412 345 678" />
+
+      <label>Email Address</label>
+      <input id="bf-email" type="email" placeholder="e.g. alex@example.com.au" />
+
+      <label>Inspection Format</label>
+      <select id="bf-type">
+        <option value="In-Person Inspection">In-Person Inspection</option>
+        <option value="Virtual Video Tour">Virtual Video Tour</option>
+      </select>
+
+      <button class="booking-submit-btn" id="bf-submit">Confirm Booking</button>
+      <div class="booking-cancel" id="bf-cancel">Cancel</div>
+    `;
+
+    messages.appendChild(card);
+    scrollToBottom();
+
+    document.getElementById("bf-cancel").addEventListener("click", () => {
+      card.remove();
+      chatForm.style.display = "flex";
+    });
+
+    document.getElementById("bf-submit").addEventListener("click", async () => {
+      const name = document.getElementById("bf-name").value.trim();
+      const phone = document.getElementById("bf-phone").value.trim();
+      const email = document.getElementById("bf-email").value.trim();
+      const type = document.getElementById("bf-type").value;
+
+      if (!name || !phone) {
+        alert("Please enter your name and phone number.");
+        return;
+      }
+
+      card.remove();
+      chatForm.style.display = "flex";
+      showTyping();
+
+      const bookingPayload = {
+        name,
+        phone,
+        email,
+        start: slot.start,
+        end: slot.end,
+        label: slot.label,
+        property_interest: slot.label.split("—")[1]?.trim() || "Rental Property",
+        inspection_type: type
+      };
+
+      const result = await sendToBot("inspection_confirmed", null, bookingPayload);
+      hideTyping();
+
+      addMessage(result.message?.text || "Your inspection is confirmed!", "bot");
+
+      if (result.scheduling?.calendar?.ics_download_url) {
+        const calDiv = document.createElement("div");
+        calDiv.style.marginTop = "8px";
+        calDiv.innerHTML = `<a href="${result.scheduling.calendar.ics_download_url}" download="inspection.ics" class="cal-link-btn">📥 Add to Calendar (.ics)</a>`;
+        messages.appendChild(calDiv);
+        scrollToBottom();
+      }
+    });
+  }
+
+  // ========== SEND TO BACKEND & HANDLE RESPONSE ==========
+  async function sendToBot(text, leadData = null, bookingData = null) {
     try {
       const res = await fetch(EDGE_FUNCTION_URL, {
         method: "POST",
@@ -443,7 +616,7 @@
           "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
           "x-session-id": _sessionId,
         },
-        body: JSON.stringify({ message: text }),
+        body: JSON.stringify({ message: text, lead_data: leadData, booking_data: bookingData }),
       });
       return await res.json();
     } catch (err) {
@@ -459,7 +632,13 @@
 
     const result = await sendToBot(text);
     hideTyping();
+
     addMessage(result.message?.text || "I received your message. How else can I assist with your rental search?", "bot");
+
+    // CRITICAL: Render interactive buttons when slots are returned
+    if (result.scheduling && Array.isArray(result.scheduling.slots) && result.scheduling.slots.length > 0) {
+      renderSlotPicker(result.scheduling.slots);
+    }
   }
 
   chatForm.addEventListener("submit", async (e) => {
