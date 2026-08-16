@@ -320,14 +320,14 @@
   </div>
   <form id="chat-form" class="chat-input-wrap">
     <input id="chat-input" class="chat-input" type="text" placeholder="Ask about rent, suburbs, bond, viewings..." autocomplete="off" maxlength="300" />
-    <button type="button" id="voice-toggle" class="voice-toggle" title="Speaker TTS Toggle">🔇</button>
+    <button type="button" id="voice-toggle" class="voice-toggle" title="Speaker TTS OFF">🔇</button>
     <button type="button" id="chat-mic" class="chat-mic" title="Speak into Microphone">🎤</button>
     <button type="submit" class="chat-send">Send</button>
   </form>
 </div>
 
 <script>
-  // Symmetrical 6-Property Fallback Grid
+  // Complete 6-Property Symmetrical Fallback Grid
   const FALLBACK_PROPERTIES = [
     {
       id: "george-st",
@@ -338,9 +338,9 @@
       bedrooms: 0,
       bathrooms: 1,
       parking_spaces: 0,
-      pet_friendly: false,
-      available_from: "Available Now",
-      features: ["Internal Laundry", "Balcony", "Gym & Pool"],
+      pet_friendly: true,
+      available_from: "2026-09-01",
+      features: ["Internal Laundry", "Balcony", "Gym & Pool", "Building Concierge", "NBN Ready"],
       image_urls: ["https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=700&auto=format&fit=crop&q=80"]
     },
     {
@@ -352,9 +352,9 @@
       bedrooms: 2,
       bathrooms: 2,
       parking_spaces: 1,
-      pet_friendly: true,
+      pet_friendly: false,
       available_from: "Available Now",
-      features: ["Ducted AC", "Rooftop Pool", "Harbour Views"],
+      features: ["Ducted AC", "Rooftop Pool", "Secure Parking", "Dishwasher", "Storage Cage"],
       image_urls: ["https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=700&auto=format&fit=crop&q=80"]
     },
     {
@@ -367,8 +367,8 @@
       bathrooms: 2,
       parking_spaces: 2,
       pet_friendly: true,
-      available_from: "Available Now",
-      features: ["Fenced Backyard", "Double Garage", "Solar Panels"],
+      available_from: "2026-10-01",
+      features: ["Secure Backyard", "Double Lockup Garage", "Timber Floors", "Built-in Robes", "Solar Panels"],
       image_urls: ["https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=700&auto=format&fit=crop&q=80"]
     },
     {
@@ -380,9 +380,9 @@
       bedrooms: 3,
       bathrooms: 3,
       parking_spaces: 2,
-      pet_friendly: false,
+      pet_friendly: true,
       available_from: "Available Now",
-      features: ["Direct Lift Access", "Wrap Terrace", "Miele Kitchen"],
+      features: ["Direct Lift Access", "Wrap-around Terrace", "Miele Appliances", "Wine Fridge", "24/7 Security"],
       image_urls: ["https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=700&auto=format&fit=crop&q=80"]
     },
     {
@@ -396,7 +396,7 @@
       parking_spaces: 1,
       pet_friendly: true,
       available_from: "Available Now",
-      features: ["Ocean Views", "Timber Floors", "Moments to Sand"],
+      features: ["Ocean Views", "Timber Floors", "Moments to Sand", "Balcony", "Built-in Wardrobe"],
       image_urls: ["https://images.unsplash.com/photo-1515263487990-61b07816b324?w=700&auto=format&fit=crop&q=80"]
     },
     {
@@ -410,7 +410,7 @@
       parking_spaces: 1,
       pet_friendly: false,
       available_from: "Available Now",
-      features: ["Concierge", "Floor-to-Ceiling Glass", "Metro Station Access"],
+      features: ["Concierge", "Floor-to-Ceiling Glass", "Metro Station Access", "Ducted AC", "Gym & Sauna"],
       image_urls: ["https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=700&auto=format&fit=crop&q=80"]
     }
   ];
@@ -479,7 +479,7 @@
       });
       
       const properties = await res.json();
-      if (Array.isArray(properties) && properties.length > 0) {
+      if (Array.isArray(properties) && properties.length >= 6) {
         renderCardListings(properties);
         return;
       }
@@ -523,12 +523,25 @@
     return text.replace(/\*\*(.+?)\*\*/g, "$1").replace(/\*(.+?)\*/g, "$1").replace(/\[(.*?)\]\(.*?\)/g, "$1");
   }
 
+  // Pre-load synthesis voices to ensure instant playback
+  let _synthVoices = [];
+  if ('speechSynthesis' in window) {
+    const loadVoices = () => { _synthVoices = window.speechSynthesis.getVoices(); };
+    loadVoices();
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+  }
+
   function speakText(text) {
     if (!_voiceEnabled || !('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
     const clean = stripMarkdown(text);
     const utterance = new SpeechSynthesisUtterance(clean);
+    
+    const auVoice = _synthVoices.find(v => v.lang === "en-AU" || v.lang === "en_AU") || _synthVoices.find(v => v.lang.startsWith("en"));
+    if (auVoice) utterance.voice = auVoice;
     utterance.lang = "en-AU";
+    utterance.rate = 1.0;
+    
     window.speechSynthesis.speak(utterance);
   }
 
@@ -552,13 +565,16 @@
   }
   const hideTyping = () => document.getElementById("typing-indicator")?.remove();
 
-  // ========== VOICE (MIC & SPEAKER) FUNCTIONALITY ==========
+  // ========== VOICE (MIC & SPEAKER) CONTROLS ==========
   voiceToggleBtn.addEventListener("click", () => {
     _voiceEnabled = !_voiceEnabled;
     voiceToggleBtn.textContent = _voiceEnabled ? "🔊" : "🔇";
     voiceToggleBtn.classList.toggle("active", _voiceEnabled);
     voiceToggleBtn.title = _voiceEnabled ? "Speaker TTS ON" : "Speaker TTS OFF";
-    if (!_voiceEnabled && 'speechSynthesis' in window) {
+    
+    if (_voiceEnabled) {
+      speakText("Voice output enabled.");
+    } else if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
     }
   });
@@ -568,9 +584,12 @@
     const recognizer = new SpeechRecognition();
     recognizer.lang = "en-AU";
     recognizer.interimResults = false;
-    recognizer.maxAlternatives = 1;
+    recognizer.continuous = false;
+
+    let isListening = false;
 
     recognizer.onstart = () => {
+      isListening = true;
       micBtn.classList.add("recording");
       chatInput.placeholder = "Listening... Speak now";
     };
@@ -583,24 +602,39 @@
 
     recognizer.onerror = (e) => {
       console.warn("Speech recognition error:", e.error);
+      isListening = false;
       micBtn.classList.remove("recording");
       chatInput.placeholder = "Ask about rent, suburbs, bond, viewings...";
+      if (e.error === "not-allowed") {
+        alert("Microphone access was denied. Please allow microphone permissions in your browser URL bar.");
+      }
     };
 
     recognizer.onend = () => {
+      isListening = false;
       micBtn.classList.remove("recording");
       chatInput.placeholder = "Ask about rent, suburbs, bond, viewings...";
     };
 
     micBtn.addEventListener("click", () => {
+      if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+        alert("Microphone speech recognition requires HTTPS or localhost.");
+        return;
+      }
       try {
-        recognizer.start();
-      } catch (_) {
-        recognizer.stop();
+        if (!isListening) {
+          recognizer.start();
+        } else {
+          recognizer.stop();
+        }
+      } catch (err) {
+        console.warn("Recognition trigger error:", err);
       }
     });
   } else {
-    micBtn.style.display = "none";
+    micBtn.addEventListener("click", () => {
+      alert("Speech recognition is not supported in this browser. Please use Google Chrome or Microsoft Edge.");
+    });
   }
 
   // ========== RENDER INTERACTIVE SLOT PICKER ==========
